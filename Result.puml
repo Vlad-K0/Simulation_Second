@@ -1,0 +1,530 @@
+@startuml
+interface com.Vlad_ko.Simulation.Behavior.Eatable {
+~ void beEaten(GameMap,Creature)
+}
+
+interface com.Vlad_ko.Simulation.Utils.Validation.InputValidator {
+~ boolean isValid(String)
+~ T parse(String)
+}
+
+class com.Vlad_ko.Simulation.Action.ActionLoadDefaultSettings {
+- SimulationSettings settings
++ void execute()
+}
+
+
+abstract class com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItem {
+# {abstract}int getHealthPointFood()
++ void beEaten(GameMap,Creature)
+}
+
+class com.Vlad_ko.Simulation.Action.ActionAddHerbivore {
+- int howManyHerbivore
+- SimulationSettings settings
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.Main {
++ {static} void main(String[])
+}
+
+class com.Vlad_ko.Simulation.UI.SettingsMapState {
+- InputHandler scanner
++ void handle(SimulationContext)
+}
+
+
+class com.Vlad_ko.Simulation.Utils.Pathfinding {
++ List<Coordinates> BFS(SimulationSettings,Coordinates,Class<T>)
+- List<Coordinates> reconstructPath(Map<Coordinates,Coordinates>,Coordinates,Coordinates)
+}
+
+abstract class com.Vlad_ko.Simulation.Entity.Entity {
+# Coordinates position
+# String sprite
++ void setPosition(Coordinates)
++ Coordinates getPosition()
++ String getSprite()
+}
+
+
+class com.Vlad_ko.Simulation.Core.SimulationSettings {
+- boolean infiniteMode
+- int maxHerbivores
+- int maxPredators
+- int maxObstacles
+- int maxEdibleItems
+- int widthMap
+- int heightMap
+- int infiniteTurns
+- GameMap map
+- Simulation simulation
++ boolean isEmpty()
++ int getMaxHerbivores()
++ void setMaxHerbivores(int)
++ int getMaxPredators()
++ void setMaxPredators(int)
++ int getMaxObstacles()
++ void setMaxObstacles(int)
++ int getMaxEdibleItems()
++ void setMaxEdibleItems(int)
++ int getWidthMap()
++ void setWidthMap(int)
++ int getHeightMap()
++ void setHeightMap(int)
++ boolean isInfiniteMode()
++ void setInfiniteMode(boolean)
++ GameMap getMap()
++ void setMap(GameMap)
++ int getInfiniteTurns()
++ Simulation getSimulation()
++ void setSimulation(Simulation)
+}
+
+
+class com.Vlad_ko.Simulation.Entity.Item.Edible.CornCob {
+- {static} String ANSI_RICE_EARS_ITEM
+- {static} int CORN_COB_HEALTH_GENERATION
+# int getHealthPointFood()
+}
+
+
+class com.Vlad_ko.Simulation.Core.RendererMap {
+- {static} String ANSI_BACKGROUND_CELL_COLOR
+- {static} String ANSI_RESET
+- {static} String EMPTY_SQUARE
+- GameMap gameMap
++ void render()
+- String colorizeEmptyCell()
+- String colorizeCellWithEntity(String)
+}
+
+
+abstract class com.Vlad_ko.Simulation.Entity.Item.Item {
+}
+class com.Vlad_ko.Simulation.Utils.InputHandler {
+- Scanner scanner
++ T validateUserInput(InputValidator<T>,ConsoleMessage)
+}
+
+
+enum com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItemType {
++  CORN_COB
++  RICE_EARS
++  TOMATO
+}
+
+class com.Vlad_ko.Simulation.Action.ActionGenerateMap {
+- SimulationSettings settings
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.Utils.Random {
++ {static} Coordinates getRandomEmptyCell(SimulationSettings)
+}
+
+class com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItemFactory {
+- {static} Random RANDOM
++ {static} EdibleItem createEdibleItem(EdibleItemType,Coordinates)
++ {static} EdibleItem createRandomEdibleItem(Coordinates)
+}
+
+
+class com.Vlad_ko.Simulation.Utils.EntityService {
+- SimulationSettings settings
+- List<Entity> entities
++ List<Creature> getCreatures(SimulationSettings)
++ boolean isTheFoodOut(SimulationSettings)
++ boolean isAnyLivingHerbivore(SimulationSettings)
++ boolean isAnyEdibleItem(SimulationSettings)
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionCreatureAttackOrEat {
+- SimulationSettings settings
++ void execute()
+}
+
+
+abstract class com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceEntity {
+# GameMap map
+- SimulationSettings settings
+# T lastPlacedEntity
+# {abstract}T createEntity(Coordinates)
++ void execute()
++ T getLastPlacedEntity()
+}
+
+
+interface com.Vlad_ko.Simulation.Behavior.Movable {
+~ void move(SimulationSettings)
+}
+
+class com.Vlad_ko.Simulation.Utils.Validation.PositiveIntegerValidator {
++ boolean isValid(String)
++ Integer parse(String)
+}
+
+class com.Vlad_ko.Simulation.Action.ActionInitializeSimulation {
+- SimulationSettings settings
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.UI.SettingsState {
+- InputHandler scanner
++ void handle(SimulationContext)
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceHerbivore {
+# Entity createEntity(Coordinates)
+}
+
+abstract class com.Vlad_ko.Simulation.Entity.Creature.Creature {
+- List<Coordinates> path
+# Coordinates target
+- int DEFAULT_HP
+# int HP
+# int speed
+# int attackRange
++ void healingCreature(int)
++ boolean isTargetInAttackZone()
++ boolean refineTarget(SimulationSettings)
++ void move(SimulationSettings)
++ void eatOrAttack(GameMap)
+# boolean isDead(Creature)
+# {abstract}Class<? extends Eatable> getTypeFood()
+# List<Coordinates> findClosestFood(SimulationSettings)
+}
+
+
+class com.Vlad_ko.Simulation.Entity.Item.Obstacle {
+- {static} String[] ANSI_OBSTACLE_ITEM
+- {static} Random random
+}
+
+class com.Vlad_ko.Simulation.UI.StartMenuState {
+- InputHandler scanner
++ void handle(SimulationContext)
+}
+
+
+class com.Vlad_ko.Simulation.UI.SimulationContext {
+- SimulationState state
+- boolean isRunning
+- SimulationSettings settings
++ SimulationSettings getSettings()
++ void setSettings(SimulationSettings)
++ void setState(SimulationState)
++ void stop()
++ void run()
+}
+
+
+abstract class com.Vlad_ko.Simulation.Utils.SettingsLoader.SettingsLoader {
+# {abstract}String getFilePath()
++ SimulationSettings loadSettings(SimulationSettings)
+}
+
+class com.Vlad_ko.Simulation.Utils.Coordinates {
+- int x
++ int getX()
++ int getY()
++ boolean equals(Object)
++ int hashCode()
+}
+
+
+class com.Vlad_ko.Simulation.UI.SettingsMaxEntityState {
+- InputHandler scanner
++ void handle(SimulationContext)
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionRenderMap {
+- SimulationSettings settings
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionAddEdibleItem {
+- SimulationSettings settings
+- int howManyEdibleItem
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.Utils.Validation.YesNoValidator {
+- {static} Set<String> YES_OPTIONS
+- {static} Set<String> NO_OPTIONS
++ boolean isValid(String)
++ Boolean parse(String)
+}
+
+
+class com.Vlad_ko.Simulation.UI.InfiniteSimulationState {
+- InputHandler scanner
+- EntityService entityService
++ void handle(SimulationContext)
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionCheckResourcesAvailable {
+- SimulationSettings settings
+- Simulation simulation
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionMoveCreatures {
+- SimulationSettings settings
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.Utils.Validation.InfiniteOrStepToStepMode {
+- {static} Set<String> INFINITE_MODE_OPTIONS
+- {static} Set<String> STEP_BY_STEP_OPTIONS
++ boolean isValid(String)
++ Boolean parse(String)
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionUpdateEntities {
++ void execute()
+}
+
+class com.Vlad_ko.Simulation.Core.GameMap {
++ HashMap<Coordinates,Entity> entityMap
+- List<Entity> entities
+- int width
+- int height
++ int getWidth()
++ int getHeight()
++ List<Entity> getEntities()
++ void setEntitiesInList(List<Entity>)
++ void placeEntity(Coordinates,Entity)
++ void removeEntity(Coordinates)
++ boolean isCellEmpty(Coordinates)
++ Entity getEntityAtCell(Coordinates)
+}
+
+
+class com.Vlad_ko.Simulation.Entity.Item.Edible.Tomato {
+- {static} String ANSI_TOMATO_ITEM
+- {static} int TOMATO_HEALTH_GENERATION
+# int getHealthPointFood()
+}
+
+
+class com.Vlad_ko.Simulation.UI.SimulationModeSelectionState {
+- InputHandler scanner
++ void handle(SimulationContext)
+}
+
+
+interface com.Vlad_ko.Simulation.UI.SimulationState {
+~ void handle(SimulationContext)
+}
+
+class com.Vlad_ko.Simulation.Action.ActionMoveEntity {
+- SimulationSettings settings
+- Entity current
+- Coordinates target
+- void moveEntity(Entity,Coordinates)
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.UI.InitializeSimulationState {
+- InputHandler scanner
++ void handle(SimulationContext)
+}
+
+
+class com.Vlad_ko.Simulation.Core.Simulation {
+- SimulationSettings settings
+- List<Action> initActions
+- List<Action> turnActions
+- int counterTurns
++ void resetCounter()
++ void nextTurn()
++ void addInitActions(Action)
++ void addTurnActions(Action)
++ void initialize()
++ void startSimulation()
++ void pauseSimulation()
+}
+
+
+class com.Vlad_ko.Simulation.UI.GenerateMapState {
+- InputHandler scanner
++ void handle(SimulationContext)
+}
+
+
+class com.Vlad_ko.Simulation.UI.StepByStepSimulationState {
+- InputHandler scanner
+- EntityService entityService
++ void handle(SimulationContext)
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceObstacle {
+# Entity createEntity(Coordinates)
+}
+
+enum com.Vlad_ko.Simulation.UI.ConsoleMessage {
++  START_MESSAGE
++  START_MENU
++  SETTINGS_MENU
++  WARING_GENERATE_DEFAULT_SETTINGS
++  WARING_START_DEFAULT_SETTINGS
++  WARING_END_FOOD_MENU
++  SIMULATION_MODE_SELECT
++  RECREATE_MAP
++  WARING_WRONG_INPUT
++  SETTINGS_MAP_SIZE
++  SETTINGS_MAP_WIDTH
++  SETTINGS_MAP_HEIGHT
++  SETTINGS_MAX_ENTITY
++  SETTING_MAX_HERBIVORE
++  SETTING_MAX_OBSTACLE
++  SETTING_MAX_PREDATOR
++  SETTING_MAX_EATABLE_ITEM
++  SETTING_COUNT_TURN
++  ADD_EDIBLE_ITEMS
++  ADD_HERBIVORE
++  HOW_MANY
+- String message
++ String getMessage()
+}
+
+
+class com.Vlad_ko.Simulation.UI.AddFoodState {
+- InputHandler scanner
++ void handle(SimulationContext)
+}
+
+
+class com.Vlad_ko.Simulation.UI.RecreateMenuState {
+- InputHandler scanner
++ void handle(SimulationContext)
+}
+
+
+class com.Vlad_ko.Simulation.Entity.Creature.Predator {
+- {static} String ANSI_HERBIVORE
++ {static} int DAMAGE
++ {static} int SPEED
++ {static} int ATTACK_RANGE
+# Class<? extends Eatable> getTypeFood()
+}
+
+
+class com.Vlad_ko.Simulation.Utils.Neighbour {
++ {static} ArrayList<Coordinates> getNeighbourCell(Coordinates,SimulationSettings)
+}
+
+class com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceEdibleItem {
+# Entity createEntity(Coordinates)
+}
+
+class com.Vlad_ko.Simulation.Entity.Item.Edible.RiceEars {
+- {static} String ANSI_RICE_EARS_ITEM
+- {static} int RICE_EARS_HEALTH_GENERATION
+# int getHealthPointFood()
+}
+
+
+class com.Vlad_ko.Simulation.Utils.SettingsLoader.DefaultSettingsLoader {
+# String getFilePath()
+}
+
+class com.Vlad_ko.Simulation.Entity.Creature.Herbivore {
+- {static} String ANSI_HERBIVORE
+- {static} int HERBIVORE_HEALTH_GENERATION
++ {static} int SPEED
++ {static} int ATTACK_RANGE
+# Class<? extends Eatable> getTypeFood()
++ void beEaten(GameMap,Creature)
++ void takeDamage()
+}
+
+
+interface com.Vlad_ko.Simulation.Action.Action {
+~ void execute()
+}
+
+class com.Vlad_ko.Simulation.Action.ActionSleepSimulation {
++ void execute()
+}
+
+class com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceEntities {
+- GameMap map
+- List<Entity> entities
+- Random random
+- SimulationSettings settings
+- void placeEntities()
+- void placeEntities(ActionPlaceEntity<? extends Entity>,int)
+- List<Entity> getEntities()
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlacePredator {
+# Entity createEntity(Coordinates)
+}
+
+
+
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionLoadDefaultSettings
+com.Vlad_ko.Simulation.Behavior.Eatable <|.. com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItem
+com.Vlad_ko.Simulation.Entity.Item.Item <|-- com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItem
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionAddHerbivore
+com.Vlad_ko.Simulation.UI.SimulationState <|.. com.Vlad_ko.Simulation.UI.SettingsMapState
+com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItem <|-- com.Vlad_ko.Simulation.Entity.Item.Edible.CornCob
+com.Vlad_ko.Simulation.Entity.Entity <|-- com.Vlad_ko.Simulation.Entity.Item.Item
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionGenerateMap
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionCreatureAttackOrEat
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceEntity
+com.Vlad_ko.Simulation.Utils.Validation.InputValidator <|.. com.Vlad_ko.Simulation.Utils.Validation.PositiveIntegerValidator
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionInitializeSimulation
+com.Vlad_ko.Simulation.UI.SimulationState <|.. com.Vlad_ko.Simulation.UI.SettingsState
+com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceEntity <|-- com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceHerbivore
+com.Vlad_ko.Simulation.Behavior.Movable <|.. com.Vlad_ko.Simulation.Entity.Creature.Creature
+com.Vlad_ko.Simulation.Entity.Entity <|-- com.Vlad_ko.Simulation.Entity.Creature.Creature
+com.Vlad_ko.Simulation.Entity.Item.Item <|-- com.Vlad_ko.Simulation.Entity.Item.Obstacle
+com.Vlad_ko.Simulation.UI.SimulationState <|.. com.Vlad_ko.Simulation.UI.StartMenuState
+com.Vlad_ko.Simulation.UI.SimulationState <|.. com.Vlad_ko.Simulation.UI.SettingsMaxEntityState
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionRenderMap
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionAddEdibleItem
+com.Vlad_ko.Simulation.Utils.Validation.InputValidator <|.. com.Vlad_ko.Simulation.Utils.Validation.YesNoValidator
+com.Vlad_ko.Simulation.UI.SimulationState <|.. com.Vlad_ko.Simulation.UI.InfiniteSimulationState
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionCheckResourcesAvailable
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionMoveCreatures
+com.Vlad_ko.Simulation.Utils.Validation.InputValidator <|.. com.Vlad_ko.Simulation.Utils.Validation.InfiniteOrStepToStepMode
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionUpdateEntities
+com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItem <|-- com.Vlad_ko.Simulation.Entity.Item.Edible.Tomato
+com.Vlad_ko.Simulation.UI.SimulationState <|.. com.Vlad_ko.Simulation.UI.SimulationModeSelectionState
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionMoveEntity
+com.Vlad_ko.Simulation.UI.SimulationState <|.. com.Vlad_ko.Simulation.UI.InitializeSimulationState
+com.Vlad_ko.Simulation.UI.SimulationState <|.. com.Vlad_ko.Simulation.UI.GenerateMapState
+com.Vlad_ko.Simulation.UI.SimulationState <|.. com.Vlad_ko.Simulation.UI.StepByStepSimulationState
+com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceEntity <|-- com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceObstacle
+com.Vlad_ko.Simulation.UI.SimulationState <|.. com.Vlad_ko.Simulation.UI.AddFoodState
+com.Vlad_ko.Simulation.UI.SimulationState <|.. com.Vlad_ko.Simulation.UI.RecreateMenuState
+com.Vlad_ko.Simulation.Entity.Creature.Creature <|-- com.Vlad_ko.Simulation.Entity.Creature.Predator
+com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceEntity <|-- com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceEdibleItem
+com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItem <|-- com.Vlad_ko.Simulation.Entity.Item.Edible.RiceEars
+com.Vlad_ko.Simulation.Utils.SettingsLoader.SettingsLoader <|-- com.Vlad_ko.Simulation.Utils.SettingsLoader.DefaultSettingsLoader
+com.Vlad_ko.Simulation.Behavior.Eatable <|.. com.Vlad_ko.Simulation.Entity.Creature.Herbivore
+com.Vlad_ko.Simulation.Entity.Creature.Creature <|-- com.Vlad_ko.Simulation.Entity.Creature.Herbivore
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionSleepSimulation
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceEntities
+com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlaceEntity <|-- com.Vlad_ko.Simulation.Action.ActionPlace.ActionPlacePredator
+@enduml

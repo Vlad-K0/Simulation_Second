@@ -1,0 +1,221 @@
+@startuml
+interface com.Vlad_ko.Simulation.Behavior.Eatable {
+~ void beEaten(GameMap,Creature)
+}
+
+class com.Vlad_ko.Simulation.Action.ActionPlaceObstacle {
+- Coordinates coordinates
+- GameMap map
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionMoveCreatures {
+- List<Creature> creatures
+- GameMap map
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionPlacePredator {
+- Coordinates coordinates
+- GameMap map
++ void execute()
+}
+
+
+abstract class com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItem {
+# {abstract}int getHealthPointFood()
++ void beEaten(GameMap,Creature)
+}
+
+class com.Vlad_ko.Simulation.Main {
++ {static} void main(String[])
+}
+
+class com.Vlad_ko.Simulation.Core.GameMap {
++ HashMap<Coordinates,Entity> creaturesMap
+- int width
+- int height
++ int getWidth()
++ int getHeight()
++ ArrayList<Coordinates> getNeighbourCell(Coordinates)
++ void placeEntity(Coordinates,Entity)
++ void removeEntity(Coordinates)
++ void moveEntity(Entity,Coordinates)
++ boolean isCellEmpty(Coordinates)
++ Entity getEntityAtCell(Coordinates)
++ Coordinates getRandomEmptyCell()
+}
+
+
+class com.Vlad_ko.Simulation.Utils.Pathfinding {
++ List<Coordinates> BFS(GameMap,Coordinates,Class<T>)
+- List<Coordinates> reconstructPath(Map<Coordinates,Coordinates>,Coordinates,Coordinates)
+}
+
+abstract class com.Vlad_ko.Simulation.Entity.Entity {
+# Coordinates position
+# String sprite
++ void setPosition(Coordinates)
++ Coordinates getPosition()
++ String getSprite()
+}
+
+
+class com.Vlad_ko.Simulation.Entity.Item.Edible.Tomato {
+- {static} String ANSI_TOMATO_ITEM
+- {static} int TOMATO_HEALTH_GENERATION
+# int getHealthPointFood()
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionPlaceHerbivore {
+- Coordinates coordinates
+- GameMap map
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.Entity.Item.Edible.CornCob {
+- {static} String ANSI_RICE_EARS_ITEM
+- {static} int CORN_COB_HEALTH_GENERATION
+# int getHealthPointFood()
+}
+
+
+class com.Vlad_ko.Simulation.Core.RendererMap {
+- {static} String ANSI_BACKGROUND_CELL_COLOR
+- {static} String ANSI_RESET
+- {static} String EMPTY_SQUARE
++ void render(GameMap)
+- String colorizeEmptyCell()
+- String colorizeCellWithEntity(String)
+}
+
+
+class com.Vlad_ko.Simulation.Action.ActionPlaceEntities {
+- GameMap map
+- int MAX_COUNT_PREDATOR
+- int MAX_COUNT_HERBIVORE
+- int MAX_COUNT_EDIBLE_ITEM
+- int MAX_COUNT_OBSTACLE
+- void placeEntities()
++ void execute()
+}
+
+
+abstract class com.Vlad_ko.Simulation.Entity.Item.Item {
+}
+enum com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItemType {
++  CORN_COB
++  RICE_EARS
++  TOMATO
+}
+
+class com.Vlad_ko.Simulation.Action.ActionPlaceEdibleItem {
+- Coordinates coordinates
+- GameMap map
++ void execute()
+}
+
+
+class com.Vlad_ko.Simulation.Core.Simulation {
+~ GameMap gameMap
+~ RendererMap renderer
+}
+
+class com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItemFactory {
+- {static} Random RANDOM
++ EdibleItem createEdibleItem(EdibleItemType,Coordinates)
++ EdibleItem createRandomEdibleItem(Coordinates)
+}
+
+
+interface com.Vlad_ko.Simulation.Behavior.Movable {
+~ void move(GameMap)
+}
+
+class com.Vlad_ko.Simulation.Entity.Creature.Predator {
+- {static} String ANSI_HERBIVORE
++ {static} int DAMAGE
++ {static} int SPEED
++ {static} int ATTACK_RANGE
+# Class<? extends Eatable> getTypeFood()
+}
+
+
+abstract class com.Vlad_ko.Simulation.Entity.Creature.Creature {
+- List<Coordinates> path
+# Coordinates target
+- int DEFAULT_HP
+# int HP
+# int speed
+# int attackRange
++ void healingCreature(int)
++ boolean isTargetInAttackZone()
++ void move(GameMap)
+- void eatOrAttack(GameMap)
+# boolean isDead(Creature)
+# {abstract}Class<? extends Eatable> getTypeFood()
+# List<Coordinates> findClosestFood(GameMap)
+}
+
+
+class com.Vlad_ko.Simulation.Entity.Item.Obstacle {
+- {static} String[] ANSI_OBSTACLE_ITEM
+- {static} Random random
+}
+
+class com.Vlad_ko.Simulation.Entity.Item.Edible.RiceEars {
+- {static} String ANSI_RICE_EARS_ITEM
+- {static} int RICE_EARS_HEALTH_GENERATION
+# int getHealthPointFood()
+}
+
+
+class com.Vlad_ko.Simulation.Entity.Creature.Herbivore {
+- {static} String ANSI_HERBIVORE
+- {static} int HERBIVORE_HEALTH_GENERATION
++ {static} int SPEED
++ {static} int ATTACK_RANGE
+# Class<? extends Eatable> getTypeFood()
++ void beEaten(GameMap,Creature)
++ void takeDamage()
+}
+
+
+interface com.Vlad_ko.Simulation.Action.Action {
+~ void execute()
+}
+
+class com.Vlad_ko.Simulation.Utils.Coordinates {
+- int x
++ int getX()
++ int getY()
++ boolean equals(Object)
++ int hashCode()
+}
+
+
+
+
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionPlaceObstacle
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionMoveCreatures
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionPlacePredator
+com.Vlad_ko.Simulation.Behavior.Eatable <|.. com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItem
+com.Vlad_ko.Simulation.Entity.Item.Item <|-- com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItem
+com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItem <|-- com.Vlad_ko.Simulation.Entity.Item.Edible.Tomato
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionPlaceHerbivore
+com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItem <|-- com.Vlad_ko.Simulation.Entity.Item.Edible.CornCob
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionPlaceEntities
+com.Vlad_ko.Simulation.Entity.Entity <|-- com.Vlad_ko.Simulation.Entity.Item.Item
+com.Vlad_ko.Simulation.Action.Action <|.. com.Vlad_ko.Simulation.Action.ActionPlaceEdibleItem
+com.Vlad_ko.Simulation.Entity.Creature.Creature <|-- com.Vlad_ko.Simulation.Entity.Creature.Predator
+com.Vlad_ko.Simulation.Behavior.Movable <|.. com.Vlad_ko.Simulation.Entity.Creature.Creature
+com.Vlad_ko.Simulation.Entity.Entity <|-- com.Vlad_ko.Simulation.Entity.Creature.Creature
+com.Vlad_ko.Simulation.Entity.Item.Item <|-- com.Vlad_ko.Simulation.Entity.Item.Obstacle
+com.Vlad_ko.Simulation.Entity.Item.Edible.EdibleItem <|-- com.Vlad_ko.Simulation.Entity.Item.Edible.RiceEars
+com.Vlad_ko.Simulation.Behavior.Eatable <|.. com.Vlad_ko.Simulation.Entity.Creature.Herbivore
+com.Vlad_ko.Simulation.Entity.Creature.Creature <|-- com.Vlad_ko.Simulation.Entity.Creature.Herbivore
+@enduml
