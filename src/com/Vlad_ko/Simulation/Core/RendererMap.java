@@ -1,23 +1,30 @@
-import Entity.Entity;
-import utils.Coordinates;
+package com.Vlad_ko.Simulation.Core;
+
+import com.Vlad_ko.Simulation.Entity.Entity;
+import com.Vlad_ko.Simulation.Utils.Coordinates;
 
 public class RendererMap {
     private static final String ANSI_BACKGROUND_CELL_COLOR = "\033[48;5;2m";
     private static final String ANSI_RESET = "\033[0m";
     private static final String EMPTY_SQUARE = "\uD83D\uDFE9";
+    private final GameMap gameMap;
 
+    public RendererMap(GameMap gameMap) {
+        this.gameMap = gameMap;
+    }
 
-    public void render(Map map) {
-        for (int y = 0; y < map.getHeight(); y++) {
+    public void render() {
+        for (int y = 1; y <= gameMap.getHeight(); y++) {
             StringBuilder line = new StringBuilder();
-            for (int x = 0; x < map.getWidth(); x++) {
-                Entity entity = map.getEntityAtCoordinates(new Coordinates(x, y));
+            for (int x = 1; x <= gameMap.getWidth(); x++) {
+                Entity entity = gameMap.getEntityAtCell(new Coordinates(x, y));
                 line.append(entity != null ?
                         colorizeCellWithEntity(entity.getSprite()) : colorizeEmptyCell());
             }
             line.append(ANSI_RESET);
             System.out.println(line);
         }
+        System.out.println();
     }
 
     private String colorizeEmptyCell() {

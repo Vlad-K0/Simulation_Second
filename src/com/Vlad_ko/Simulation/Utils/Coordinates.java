@@ -1,13 +1,21 @@
-package utils;
+package com.Vlad_ko.Simulation.Utils;
 
 import java.util.Objects;
 
 public class Coordinates {
-    int X, Y;
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    private final int x, y;
 
     public Coordinates(int x, int y) {
-        X = x;
-        Y = y;
+        this.x = x;
+        this.y = y;
     }
 
     @Override
@@ -15,11 +23,11 @@ public class Coordinates {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Coordinates that = (Coordinates) o;
-        return X == that.X && Y == that.Y;
+        return x == that.x && y == that.y;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(X, Y);
+        return Objects.hash(x, y);
     }
 }

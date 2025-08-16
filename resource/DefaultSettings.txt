@@ -1,0 +1,6 @@
+HeightMap=15
+WidthMap=15
+MaxObstacles=5
+MaxHerbivores=5
+MaxEdibleItems=5
+MaxPredators=5
